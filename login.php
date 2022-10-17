@@ -57,7 +57,7 @@ if(isset($_POST['submit'])){
    <link rel="stylesheet" href="css/components.css">
 
 </head>
-<body>
+<body style="background:url(images/login-bg.jpg); background-repeat: no-repeat; background-size: 100% 100%;">
 
 <?php
 
