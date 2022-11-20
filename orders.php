@@ -8,13 +8,6 @@ $user_id = $_SESSION['user_id'];
 
 if(!isset($user_id)){
    header('location:login.php');
-};
-
-if(isset($_POST['submit'])){
-$order_id = $_POST['order_id'];
-   $notification='no';
-        $update_notif = $conn->prepare("UPDATE `orders` SET notification = ? WHERE id = ?");
-        $update_notif->execute([$notification, $order_id]);
 }
 
 ?>
@@ -40,7 +33,7 @@ $order_id = $_POST['order_id'];
 
 <section class="placed-orders">
 
-   <h1 class="title">notification</h1>
+   <h1 class="title">placed orders</h1>
 
    <div class="box-container">
 
@@ -48,25 +41,26 @@ $order_id = $_POST['order_id'];
       $select_orders = $conn->prepare("SELECT * FROM `orders` WHERE user_id = ?");
       $select_orders->execute([$user_id]);
       if($select_orders->rowCount() > 0){
-         while($fetch_orders = $select_orders->fetch(PDO::FETCH_ASSOC)){
-             if($fetch_orders['notification']=='yes'){
+         while($fetch_orders = $select_orders->fetch(PDO::FETCH_ASSOC)){ 
    ?>
-   <form action="" method="POST">
    <div class="box">
-       <input type="hidden" name="order_id" value="<?= $fetch_orders['id']; ?>">
-       <p>Your order (id num <?= $fetch_orders['id']; ?>) has arrived!</p>
-       <input type="submit" name="submit" class="btn"  value="dismiss">
+       <p> id : <span><?= $fetch_orders['id']; ?></span> </p>
+      <p> placed on : <span><?= $fetch_orders['placed_on']; ?></span> </p>
+      <p> name : <span><?= $fetch_orders['name']; ?></span> </p>
+      <p> number : <span><?= $fetch_orders['number']; ?></span> </p>
+      <p> email : <span><?= $fetch_orders['email']; ?></span> </p>
+      <p> address : <span><?= $fetch_orders['address']; ?></span> </p>
+      <p> payment method : <span><?= $fetch_orders['method']; ?></span> </p>
+      <p> your orders : <span><?= $fetch_orders['total_products']; ?></span> </p>
+      <p> total price : <span>RM<?= $fetch_orders['total_price']; ?></span> </p>
+      <p> payment status : <span style="color:<?php if($fetch_orders['payment_status'] == 'pending'){ echo 'red'; }else{ echo 'green'; }; ?>"><?= $fetch_orders['payment_status']; ?></span> </p>
    </div>
-       </form>
    <?php
       }
-         }
    }else{
-      echo '<p class="empty">no orders completed yet!</p>';
+      echo '<p class="empty">no orders placed yet!</p>';
    }
    ?>
-       
-       
 
    </div>
 

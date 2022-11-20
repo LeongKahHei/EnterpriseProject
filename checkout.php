@@ -24,8 +24,6 @@ if(isset($_POST['order'])){
    $address = filter_var($address, FILTER_SANITIZE_STRING);
    $placed_on = date('d-M-Y');
    $notification = 'null';
-    
-    
 
    $cart_total = 0;
    $cart_products[] = '';
@@ -34,11 +32,34 @@ if(isset($_POST['order'])){
    $cart_query->execute([$user_id]);
    if($cart_query->rowCount() > 0){
       while($cart_item = $cart_query->fetch(PDO::FETCH_ASSOC)){
+          $pid=$cart_item['pid'];
+          $pamt=$cart_item['quantity'];
          $cart_products[] = $cart_item['name'].' ( '.$cart_item['quantity'].' )';
          $sub_total = ($cart_item['price'] * $cart_item['quantity']);
          $cart_total += $sub_total;
+          //
+          $select_products = $conn->prepare("SELECT * FROM `products`");
+      $select_products->execute();
+      
+      if($select_products->rowCount() > 0){
+         while($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)){
+             if($fetch_products['name']==$cart_item['name']){
+                 $sold = $fetch_products['sold']+$pamt;
+                 $update_sold = $conn->prepare("UPDATE `products` SET sold = ? WHERE id = ?");
+                $update_sold->execute([$sold, $pid]);
+             }
+         }
+      }
+          //
       };
    };
+    
+   //
+    $date = DateTime::createFromFormat("d-M-Y",  $placed_on);
+      $insert_sales = $conn->prepare("INSERT INTO `sales`(total, year, month) VALUES(?,?,?)");
+      $insert_sales->execute([$cart_total, $date->format("Y"), $date->format("m")]);
+    
+   //
 
    $total_products = implode(', ', $cart_products);
 
@@ -47,8 +68,6 @@ if(isset($_POST['order'])){
 
    if($cart_total == 0){
       $message[] = 'your cart is empty';
-   }elseif($order_query->rowCount() > 0){
-      $message[] = 'order placed already!';
    }else{
       $insert_order = $conn->prepare("INSERT INTO `orders`(user_id, name, number, email, method, address, total_products, total_price, placed_on, notification) VALUES(?,?,?,?,?,?,?,?,?,?)");
       $insert_order->execute([$user_id, $name, $number, $email, $method, $address, $total_products, $cart_total, $placed_on, $notification]);
