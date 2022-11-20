@@ -82,7 +82,7 @@ if(isset($_POST['add_to_cart'])){
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>home page</title>
+   <title>shop</title>
 
    <!-- font awesome cdn link  -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
@@ -95,84 +95,32 @@ if(isset($_POST['add_to_cart'])){
    
 <?php include 'header.php'; ?>
 
-<div class="home-bg">
+<section class="p-category">
 
-   <section class="home">
-
-      <div class="content">
-         <span>Welcome To <span1>TheGrocer</span1> !</span>
-         <h3>BUY THE THINGS YOU NEED WITH THE CHEAPEST PRICE FROM US ~</h3>
-         <p>Everything we sell is checked daily to ensure our items are <s>PERFECT</s> and <s>FRESH</s> *</p>
-         <a href="about.php" class="btn">about us</a>
-      </div>
-
-   </section>
-
-</div>
-
-<section class="home-category">
-
-   <h1 class="title">shop by category</h1>
-
-   <div class="box-container">
-
-      <div class="box">
-         <img src="images/fruit0.png" alt="">
-         <a href="category.php?category=fruits" class="btn">fruits</a>
-      </div>
-
-      <div class="box">
-         <img src="images/meat0.png" alt="">
-         <a href="category.php?category=meat" class="btn">meat</a>
-      </div>
-
-      <div class="box">
-         <img src="images/vage0.png" alt="">
-         <a href="category.php?category=vegetables" class="btn">vegetables</a>
-      </div>
-
-      <div class="box">
-         <img src="images/sea0.png" alt="">
-         <a href="category.php?category=seafood" class="btn">seafood</a>
-      </div>
-
-   </div>
+   <a href="category.php?category=fruits">fruits</a>
+   <a href="category.php?category=meat">meat</a>
+   <a href="category.php?category=vegetables">vegetables</a>
+   <a href="category.php?category=seafood">seafood</a>
 
 </section>
 
 <section class="products">
 
-   <h1 class="title">Top selling products</h1>
+   <h1 class="title">latest products</h1>
 
    <div class="box-container">
 
    <?php
       $select_products = $conn->prepare("SELECT * FROM `products`");
       $select_products->execute();
-       $x=0;
       if($select_products->rowCount() > 0){
          while($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)){ 
-             if($x<$fetch_products['sold']){
-                 $x=$fetch_products['sold'];
-             }
-         }
-      }
    ?>
-       
-       
-    <?php
-      $select_products = $conn->prepare("SELECT * FROM `products` WHERE sold = ?");
-      $select_products->execute([$x]);
-      if($select_products->rowCount() > 0){
-          echo '<p class="empty">sold amount = '.$x.'</p>';
-         while($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)){ 
-             
-   ?>   
    <form action="" class="box" method="POST">
       <div class="price">RM<span><?= $fetch_products['price']; ?></span></div>
       <a href="view_page.php?pid=<?= $fetch_products['id']; ?>" class="fas fa-eye"></a>
-      <img src="uploaded_img/<?= $fetch_products['image']; ?>" alt="">
-      <div class="name"><?= $fetch_products['name']; ?></div>       
+      <img class="image" src="uploaded_img/<?= $fetch_products['image']; ?>" alt="">
+      <div class="name"><?= $fetch_products['name']; ?></div>
       <input type="hidden" name="pid" value="<?= $fetch_products['id']; ?>">
       <input type="hidden" name="p_name" value="<?= $fetch_products['name']; ?>">
       <input type="hidden" name="p_price" value="<?= $fetch_products['price']; ?>">
@@ -183,13 +131,15 @@ if(isset($_POST['add_to_cart'])){
    </form>
    <?php
       }
+   }else{
+      echo '<p class="empty">no products added yet!</p>';
    }
    ?>
-
 
    </div>
 
 </section>
+
 
 
 
