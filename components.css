@@ -211,7 +211,7 @@ section{
 }
 
 .header{
-   background: var(--white);
+   background: var(--light-bg);
    position: sticky;
    top:0; left:0; right:0;
    z-index: 1000;
@@ -235,6 +235,10 @@ section{
 
 .header .flex .logo span{
    color:var(--green);
+}
+
+.header .flex .logo span1{
+   color:var(--red);
 }
 
 .header .flex .navbar a{
